@@ -1,0 +1,95 @@
+#
+#  Makefile for Calypso geoynamo platform
+#    Written by H. Matsui
+#
+SHELL           = /bin/sh
+#
+#  directories of Calypso
+#
+MHDDIR = /Users/matsui/Desktop/Rayleigh_link
+INSTDIR= /Users/matsui/local
+#
+SRCDIR = $(MHDDIR)/src
+MAKEDIR= $(MHDDIR)/work
+BUILDDIR= $(MHDDIR)/bin
+TESTDIR=  $(MHDDIR)/tests
+#
+# MPI settings
+#
+MPICHDIR =    
+MPICHLIBDIR = $(MPICHDIR)/lib
+MPICHBINDIR = $(MPICHDIR)/bin
+MPICHINCDIR = 
+MPILIBS =      
+MPIRUN =      mpirun
+#
+#    compilers
+#
+
+MPIF90 = mpif90
+
+GMAKE = make
+AR = ar
+RANLIB = ranlib
+
+#
+# OPENMP_FCFLAGS OprnMP option for fortran compiler
+#
+OPENMP_FCFLAGS = -fopenmp
+#
+#
+#  optimization flags
+#
+F90OPTFLAGS= -O3 -Wall -g   -fopenmp
+#
+#  --- Please do not chenge the following ---
+#
+
+all: makemake
+	cd $(MAKEDIR); make
+	make test
+
+makemake:
+	echo "# Construct Makefile"; \
+	cd $(SRCDIR) ; \
+		$(GMAKE) \
+		GMAKE="$(GMAKE)" \
+		MAKEDIR="$(MAKEDIR)" \
+		BUILDDIR="$(BUILDDIR)" \
+		INSTDIR="$(INSTDIR)" \
+		SRCDIR="$(SRCDIR)" \
+		MPICHDIR="$(MPICHDIR)" \
+		MPILIBS="$(MPILIBS)" \
+		F90OPTFLAGS="$(F90OPTFLAGS)" \
+		MPIF90="$(MPIF90)" \
+		AR="$(AR)" \
+		RANLIB="$(RANLIB)" \
+		makemake
+
+test:
+	echo "Test!!"; \
+	cd $(TESTDIR) ; \
+		$(GMAKE) \
+		GMAKE="$(GMAKE)" \
+		BUILDDIR="$(BUILDDIR)" \
+		TESTDIR="$(TESTDIR)" \
+		MHDDIR="$(MHDDIR)" \
+		MPIRUN="$(MPIRUN)" \
+		test
+
+install:
+	cd $(MAKEDIR) ; \
+		make install
+
+clean:
+	for dir in $(MAKEDIR) $(MHDDIR) $(TESTDIR) ; do \
+	echo "# cleaning $${dir} directory..."; \
+		( cd $${dir}; \
+		make clean )\
+	done; \
+	rm -f mpif.h *.o *.mod *~ *.par *.diag *.a *.f90
+
+distclean:
+	echo "# Back to initial package"; \
+	rm -fr $(MAKEDIR) $(BUILDDIR) Makefile config.log
+	cd $(TESTDIR) ;  make distclean

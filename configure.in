@@ -1,0 +1,87 @@
+
+#                                               -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
+
+# AC_PREREQ(2.61)
+AC_INIT(FULL-PACKAGE-NAME, VERSION, BUG-REPORT-ADDRESS)
+
+AM_INIT_AUTOMAKE
+
+dnl Include GNU make check
+builtin(include,confdb/check_gnu_make.m4)
+
+dnl Include OpenMP related definitions
+builtin(include,confdb/ax_pthread.m4)
+builtin(include,confdb/ax_openmp.m4)
+
+dnl Include MPI related definitions
+builtin(include,confdb/ax_mpi.m4)
+
+AC_CONFIG_SRCDIR([src/main_pickup_rayleigh_spectr.f90])
+
+if test ${MPIFC}
+then
+	FC=${MPIFC}
+fi
+
+if test -z ${FC}
+then
+	FC=${F77}
+else
+	F77=${FC}
+fi
+
+
+if test -z ${AR}
+then
+	ar_bin="ar"
+else
+	ar_bin="${AR}"
+fi
+AC_SUBST(ar_bin)
+
+# Checks for programs.
+AC_PROG_FC
+AC_PROG_MAKE_SET
+AC_PROG_RANLIB
+
+# GNU make check
+CHECK_GNU_MAKE()
+GMAKE=$_cv_gnu_make_command
+AC_SUBST(GMAKE)
+
+# libtool check
+PKG_PROG_PKG_CONFIG
+
+# Checks using Fortran Compiler
+AC_LANG_SAVE
+AC_LANG(Fortran)
+# Check OpenMP
+AX_OPENMP
+AC_SUBST(OPENMP_FCFLAGS)
+# Check MPI
+AX_MPI
+AC_LANG_RESTORE
+AC_SUBST(MPIDIR)
+AC_SUBST(MPILIBS)
+AC_SUBST(MPIINCDIR)
+
+# AC_MSG_RESULT(MPIDIR..."${MPIDIR}")
+# AC_MSG_RESULT(MPIINCDIR..."${MPIINCDIR}")
+# AC_MSG_RESULT(MPILIBS..."${MPILIBS}")
+
+AC_MSG_RESULT()
+AC_MSG_RESULT(-----   Configuration summary   -------------------------------)
+AC_MSG_RESULT()
+if test -n "${OPENMP_FCFLAGS}"; then
+        AC_MSG_RESULT(    Use OpenMP ...        yes)
+else
+        AC_MSG_RESULT(    Use OpenMP ...         no)
+fi
+AC_MSG_RESULT()
+AC_MSG_RESULT(---------------------------------------------------------------)
+AC_MSG_RESULT()
+
+
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT

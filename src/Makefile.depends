@@ -1,0 +1,29 @@
+MPI_read_rayleigh_restart.o: $(SRCDIR)/MPI_read_rayleigh_restart.f90 m_precision.o calypso_mpi_4_rayleigh.o t_rayleigh_restart_IO.o
+	$(F90) -c $(F90OPTFLAGS) $<
+calypso_mpi_4_rayleigh.o: $(SRCDIR)/calypso_mpi_4_rayleigh.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_precision.o: $(SRCDIR)/m_precision.f90
+	$(F90) -c $(F90OPTFLAGS) $<
+main_pickup_rayleigh_spectr.o: $(SRCDIR)/main_pickup_rayleigh_spectr.f90 m_precision.o calypso_mpi_4_rayleigh.o t_field_data_IO.o t_ctl_pick_rayleigh_spectr.o t_picked_rayleigh_parameter.o t_rayleigh_restart_IO.o t_picked_rayleigh_spectr.o rayleigh_restart_IO.o MPI_read_rayleigh_restart.o
+	$(F90) -c $(F90OPTFLAGS) $<
+rayleigh99_rst_param_IO.o: $(SRCDIR)/rayleigh99_rst_param_IO.f90 m_precision.o t_rayleigh_restart_IO.o
+	$(F90) -c $(F90OPTFLAGS) $<
+rayleigh_restart_IO.o: $(SRCDIR)/rayleigh_restart_IO.f90 m_precision.o t_field_data_IO.o t_rayleigh_restart_IO.o rayleigh99_rst_param_IO.o calypso_mpi_4_rayleigh.o
+	$(F90) -c $(F90OPTFLAGS) $<
+skip_comment_f.o: $(SRCDIR)/skip_comment_f.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_control_array_integer2.o: $(SRCDIR)/t_control_array_integer2.f90 m_precision.o t_read_control_elements.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_ctl_pick_rayleigh_spectr.o: $(SRCDIR)/t_ctl_pick_rayleigh_spectr.f90 m_precision.o t_read_control_elements.o t_control_array_integer2.o skip_comment_f.o calypso_mpi_4_rayleigh.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_field_data_IO.o: $(SRCDIR)/t_field_data_IO.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_picked_rayleigh_parameter.o: $(SRCDIR)/t_picked_rayleigh_parameter.f90 m_precision.o t_ctl_pick_rayleigh_spectr.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_picked_rayleigh_spectr.o: $(SRCDIR)/t_picked_rayleigh_spectr.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_rayleigh_restart_IO.o: $(SRCDIR)/t_rayleigh_restart_IO.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_read_control_elements.o: $(SRCDIR)/t_read_control_elements.f90 m_precision.o skip_comment_f.o
+	$(F90) -c $(F90OPTFLAGS) $<
+
